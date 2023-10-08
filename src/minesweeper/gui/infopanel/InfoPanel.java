@@ -1,7 +1,5 @@
 package minesweeper.gui.infopanel;
 
-import minesweeper.gamelogic.GameState;
-
 import javax.swing.*;
 import java.awt.*;
 
