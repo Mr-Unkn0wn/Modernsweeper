@@ -30,5 +30,5 @@ bin/
 
 # images and diagrams
 diagram.puml
-img.png
-minesweeper_4x.png
+references/img.png
+references/minesweeper_4x.png
