@@ -1,8 +1,9 @@
 package minesweeper.gui.gamepanel;
 
 import minesweeper.gamelogic.Tile;
-import minesweeper.gui.ColorPallet;
+import minesweeper.gui.Constants;
 import minesweeper.gui.MyFrame;
+import minesweeper.gui.gamepanel.parts.CoveredArea;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,13 +11,17 @@ import java.awt.*;
 public class GamePanel extends JPanel {
 
     private final static int SHADOW_SIZE = 2;
-    MyFrame frame;
+    final MyFrame frame;
+    int current_tile_size;
 
-    int current_field_size;
+    private final CoveredArea coveredArea;
 
     public GamePanel(MyFrame frame) {
         super();
         this.frame = frame;
+
+        coveredArea = new CoveredArea(this);
+
         InputGamePanel inputGamePanel = new InputGamePanel(this);
         addMouseListener(inputGamePanel);
     }
@@ -27,23 +32,31 @@ public class GamePanel extends JPanel {
         paintField(g);
     }
 
+    /*
+    * Idee:
+    * 1. Dark Gray Background
+    * 2. Orange Overlay
+    * 3. Lines
+    * 4. Open fields
+    */
     private void paintField(Graphics g) {
-        int borderOffset = 2;
 
         int sizeX = getWidth() / frame.getGameState().getFieldWidth();
         int sizeY = getHeight() / frame.getGameState().getFieldHeight();
         int size = Math.min(sizeX, sizeY);
-        current_field_size = size;
+        current_tile_size = size;
+
+        coveredArea.paintCoveredArea(g);
 
         for (int y = 0; y < frame.getGameState().getFieldHeight(); y++) {
             for (int x = 0; x < frame.getGameState().getFieldWidth(); x++) {
                 Tile tile = frame.getGameState().getField()[x][y];
 
-                int xPixel = x * size + borderOffset;
-                int yPixel = y * size + borderOffset;
+                int xPixel = x * size;
+                int yPixel = y * size;
 
                 if (tile.isClosed()) {
-                    paintClosedField(g, xPixel, yPixel, size);
+                    // paintClosedField(g, xPixel, yPixel, size);
 
                     if (tile.isFlagged())
                         paintFlag(g, xPixel, yPixel, size);
@@ -59,21 +72,21 @@ public class GamePanel extends JPanel {
     }
 
     private void paintClosedField(Graphics g, int x, int y, int size) {
-        g.setColor(ColorPallet.GRAY.brighter().brighter());
+        g.setColor(Constants.DARK_GRAY.brighter().brighter());
         Polygon topPoly = new Polygon();
         topPoly.addPoint(x, y);
         topPoly.addPoint(x + size, y);
         topPoly.addPoint(x, y + size);
         g.fillPolygon(topPoly);
 
-        g.setColor(ColorPallet.GRAY.darker().darker());
+        g.setColor(Constants.DARK_GRAY.darker().darker());
         Polygon bottomPoly = new Polygon();
         bottomPoly.addPoint(x + size, y + size);
         bottomPoly.addPoint(x + size, y);
         bottomPoly.addPoint(x, y + size);
         g.fillPolygon(bottomPoly);
 
-        g.setColor(ColorPallet.GRAY);
+        g.setColor(Constants.DARK_GRAY);
         g.fillRoundRect(x + SHADOW_SIZE, y + SHADOW_SIZE, size - 2 * SHADOW_SIZE, size - 2 * SHADOW_SIZE, 2 * SHADOW_SIZE, 2 * SHADOW_SIZE);
     }
 

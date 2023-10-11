@@ -78,7 +78,7 @@ class InputGamePanel extends MouseAdapter {
     }
 
     private int pixelLocationToTileCoordinate(int pixel) {
-        return pixel / gamePanel.current_field_size;
+        return pixel / gamePanel.current_tile_size;
     }
 
     private boolean isTileCoordinateValid(int x, int y) {

@@ -11,12 +11,11 @@ public class GameState {
     private final Tile[][] field;
     private int flagsPlaced;
     private boolean isFieldGenerated = false;
-
     private int tilesOpened = 0;
-
-    private boolean gameOver = false;
-
+    private boolean gameLost = false;
     private boolean gameWon = false;
+    private long startTime;
+    private long endTime;
 
     /*
      * --------------------------
@@ -62,7 +61,25 @@ public class GameState {
         return field;
     }
 
+    public boolean isFieldGenerated() {
+        return isFieldGenerated;
+    }
 
+    public boolean isGameLost() {
+        return gameLost;
+    }
+
+    public boolean isGameWon() {
+        return gameWon;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
 
     /*
      * --------------------------
@@ -71,12 +88,13 @@ public class GameState {
      */
 
     public void leftClicked(int x, int y) {
-        if (gameOver || gameWon)
+        if (gameLost || gameWon)
             return;
 
         if (!isFieldGenerated) {
             generateField(x, y);
             isFieldGenerated = true;
+            startTime = System.currentTimeMillis();
         }
 
         Tile tile = field[x][y];
@@ -85,6 +103,8 @@ public class GameState {
             return;
 
         recursiveReveal(x, y);
+
+
     }
 
     private void recursiveReveal(int x, int y) {
@@ -160,7 +180,7 @@ public class GameState {
      */
 
     public void rightClicked(int x, int y) {
-        if (gameOver || gameWon)
+        if (gameLost || gameWon)
             return;
 
         Tile tile = field[x][y];
@@ -247,17 +267,19 @@ public class GameState {
 
     private boolean openTileAndCount(Tile tile) {
         if (tile.isBomb()) {
-            gameOver = true;
+            endTime = System.currentTimeMillis();
+            gameLost = true;
             Arrays.stream(field).forEach(arr -> Arrays.stream(arr).filter(Tile::isBomb).forEach(Tile::open));
             return false;
         }
 
         tilesOpened++;
         tile.open();
-        System.out.println(tilesOpened);
 
-        if(tilesOpened == fieldWidth * fieldHeight - totalBombs)
+        if(tilesOpened == fieldWidth * fieldHeight - totalBombs){
+            endTime = System.currentTimeMillis();
             gameWon = true;
+        }
 
         return true;
     }
