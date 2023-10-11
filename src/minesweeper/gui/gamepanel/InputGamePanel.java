@@ -8,13 +8,13 @@ import java.awt.event.MouseEvent;
 
 class InputGamePanel extends MouseAdapter {
 
-    private final GamePanel gamePanel;
+    private final FieldPanel fieldPanel;
 
-    InputGamePanel(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    InputGamePanel(FieldPanel fieldPanel) {
+        this.fieldPanel = fieldPanel;
 
-        InputMap inputMap = gamePanel.getInputMap(JComponent.WHEN_FOCUSED);
-        ActionMap actionMap = gamePanel.getActionMap();
+        InputMap inputMap = fieldPanel.getInputMap(JComponent.WHEN_FOCUSED);
+        ActionMap actionMap = fieldPanel.getActionMap();
 
         KeyStroke spaceKeyStroke = KeyStroke.getKeyStroke("SPACE");
         inputMap.put(spaceKeyStroke, "SpacePressed");
@@ -36,7 +36,7 @@ class InputGamePanel extends MouseAdapter {
         int mouseX = (int) mousePosition.getX();
         int mouseY = (int) mousePosition.getY();
 
-        Point panelPosition = gamePanel.getLocationOnScreen();
+        Point panelPosition = fieldPanel.getLocationOnScreen();
 
         int panelX = (int) panelPosition.getX();
         int panelY = (int) panelPosition.getY();
@@ -44,10 +44,10 @@ class InputGamePanel extends MouseAdapter {
         mouseX -= panelX;
         mouseY -= panelY;
 
-        if(mouseX < 0 || mouseX >= gamePanel.getWidth())
+        if(mouseX < 0 || mouseX >= fieldPanel.getWidth())
             return;
 
-        if(mouseY < 0 || mouseY >= gamePanel.getHeight())
+        if(mouseY < 0 || mouseY >= fieldPanel.getHeight())
             return;
 
         int x = pixelLocationToTileCoordinate(mouseX);
@@ -56,8 +56,8 @@ class InputGamePanel extends MouseAdapter {
         if(!isTileCoordinateValid(x,y))
             return;
 
-        gamePanel.frame.getGameState().spacePressed(x,y);
-        gamePanel.frame.repaint();
+        fieldPanel.gamePanel.frame.getGameState().spacePressed(x,y);
+        SwingUtilities.invokeLater(() -> fieldPanel.gamePanel.frame.repaint());
 
     }
 
@@ -69,23 +69,24 @@ class InputGamePanel extends MouseAdapter {
         if(!isTileCoordinateValid(x,y))
             return;
 
+
         if (e.getButton() == MouseEvent.BUTTON1) {
-            gamePanel.frame.getGameState().leftClicked(x, y);
+            fieldPanel.gamePanel.frame.getGameState().leftClicked(x, y);
         } else if (e.getButton() == MouseEvent.BUTTON3) {
-            gamePanel.frame.getGameState().rightClicked(x, y);
+            fieldPanel.gamePanel.frame.getGameState().rightClicked(x, y);
         }
-        gamePanel.frame.repaint();
+        SwingUtilities.invokeLater(() -> fieldPanel.gamePanel.frame.repaint());
     }
 
     private int pixelLocationToTileCoordinate(int pixel) {
-        return pixel / gamePanel.current_tile_size;
+        return pixel / fieldPanel.tileSize;
     }
 
     private boolean isTileCoordinateValid(int x, int y) {
-        if (x >= gamePanel.frame.getGameState().getFieldWidth())
+        if (x >= fieldPanel.gamePanel.frame.getGameState().getFieldWidth())
             return false;
 
-        if (y >= gamePanel.frame.getGameState().getFieldHeight())
+        if (y >= fieldPanel.gamePanel.frame.getGameState().getFieldHeight())
             return false;
 
         if (x < 0)

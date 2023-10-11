@@ -1,9 +1,11 @@
 package minesweeper.gui.infopanel;
 
+import minesweeper.gui.Constants;
 import minesweeper.gui.MyButton;
 import minesweeper.gui.MyFrame;
 
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 
 public class TopBarPanel extends JPanel {
@@ -16,6 +18,8 @@ public class TopBarPanel extends JPanel {
         super();
         this.frame = frame;
 
+        setBorder(new MatteBorder(0,0,2,0, Constants.BORDER_GRAY));
+        setBackground(Constants.TOP_BAR_GRAY);
         setPreferredSize(new Dimension(frame.getWidth(), TOP_BAR_HEIGHT));
 
         InputTopBarPanel inputTopBarPanel = new InputTopBarPanel(this);

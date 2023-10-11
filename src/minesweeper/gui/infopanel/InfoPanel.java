@@ -65,9 +65,9 @@ class InfoPanel extends JPanel {
                     updateClock();
                 }
             };
-
-            scheduler.scheduleAtFixedRate(timerTask, 0L, 200L);
+            scheduler.scheduleAtFixedRate(timerTask, 200L, 200L);
             isClockRunning = true;
+
         }
     }
 
@@ -88,20 +88,20 @@ class InfoPanel extends JPanel {
         long timePassed = System.currentTimeMillis() - startTime;
 
 
-        time.setText(timeToString(timePassed));
+        SwingUtilities.invokeLater(() -> time.setText(timeToString(timePassed)));
     }
 
     private String timeToString(long timeInMs) {
         long minutes = timeInMs / 60000; // 1 minute = 60,000 milliseconds
         long seconds = (timeInMs % 60000) / 1000; // 1 second = 1,000 milliseconds
 
-        if(minutes > 59){ // if you need longer then one hour you don't deserve a timer
+        if (minutes > 59) { // if you need longer then one hour you don't deserve a timer
             minutes = 59;
             seconds = 59;
         }
 
         String minutesString = "";
-        if(minutes > 0)
+        if (minutes > 0)
             minutesString = minutes + "M";
 
         String secondsString = seconds + "S";

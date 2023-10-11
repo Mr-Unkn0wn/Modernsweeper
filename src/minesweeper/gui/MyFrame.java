@@ -5,7 +5,6 @@ import minesweeper.gui.gamepanel.GamePanel;
 import minesweeper.gui.infopanel.TopBarPanel;
 
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -15,23 +14,28 @@ public class MyFrame extends JFrame {
 
     public MyFrame(GameState gameState) {
         this.gameState = gameState;
+
+        initFrame();
+
         GamePanel gamePanel = new GamePanel(this);
+        add(gamePanel, BorderLayout.CENTER);
+
         TopBarPanel topBarPanel = new TopBarPanel(this);
-
-
-
-        initFrame(gamePanel, topBarPanel);
+        add(topBarPanel, BorderLayout.NORTH);
 
         setVisible(true);
     }
 
-    private void initFrame(GamePanel gamePanel, TopBarPanel topBarPanel) {
+    private void initFrame() {
         setUndecorated(true);
+        setLayout(new BorderLayout());
 
         setSize(1280, 720);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        getRootPane().setDoubleBuffered(true);
         setLocationRelativeTo(null);
         setResizable(false);
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -39,20 +43,6 @@ public class MyFrame extends JFrame {
                 repaint();
             }
         });
-        setLayout(new BorderLayout());
-
-
-
-        topBarPanel.setBackground(Constants.TOP_BAR_GRAY);
-        topBarPanel.setBorder(new MatteBorder(0,0,2,0, Constants.BORDER_GRAY));
-        add(topBarPanel, BorderLayout.NORTH);
-
-        gamePanel.setBackground(Constants.DARK_GRAY);
-        add(gamePanel, BorderLayout.CENTER);
-
-
-
-
     }
 
 
